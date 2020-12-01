@@ -105,12 +105,6 @@ let
       shift $((OPTIND - 1))
     done
 
-    info "OPTIND $OPTIND"
-    info "ARGS"
-    for arg in "$@"; do
-      subinfo $arg
-    done
-
     if date_compare $year-12-25 $(date +'%Y-%m-%d'); then
       max_day=25
     else
@@ -120,17 +114,18 @@ let
     declare -a days=()
 
     if [[ -n "$@" ]]; then
-      for arg in "$@"; do
-        if [[ 00 -le $arg ]] && [[ $arg -le $max_day ]]; then
-          days="$days $(printf "%02d" "$arg")"
-        else
-          error "Recieved invalid day: $arg"
-        fi
-      done
-      info "$(printf "Fetching inputs for days:"; printf " %02d" "$days")"
+      day_args="$@"
     else
-      days={01..$(date +'%d')}
+      day_args=$(seq 01 $(date +'%d'))
     fi
+    for arg in $day_args; do
+      if [[ 00 -le $arg ]] && [[ $arg -le $max_day ]]; then
+        days="$days $(printf "%02d" "$arg")"
+      else
+        error "Recieved invalid day: $arg"
+      fi
+    done
+    info "$(printf "Fetching inputs for days:"; printf " %02d" "$days")"
 
     cd "${builtins.toString ./.}"
     ln -sf "${builtins.toString ./.}/input" "${builtins.toString ./.}/rust/"

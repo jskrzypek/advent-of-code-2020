@@ -28,7 +28,17 @@ let
     '';
 
   };
+
+  clj2nix = callPackage (fetchFromGitHub {
+    owner = "hlolli";
+    repo = "clj2nix";
+    rev = "89d1cda232175b588c7774e638c9ebfaaedea0e3";
+    sha256 = "1xjwi3y2dylcmz9y8nx2ldghiy6qbn3f4m4l68mz1prirb2lxqi0";
+    fetchSubmodules = true;
+  }) { };
+
 in mkShell {
   name = "advent-of-code-2020";
-  buildInputs = [ cargo-aoc clojure ];
+  buildInputs = [ cargo-aoc clojure clj2nix ];
+  passthru = { inherit cargo-aoc clj2nix; };
 }

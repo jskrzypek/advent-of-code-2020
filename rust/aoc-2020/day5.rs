@@ -1,4 +1,4 @@
-use aoc_runner_derive::{aoc, aoc_generator};
+use aoc_runner_derive::aoc;
 use std::cell::Cell;
 use std::num::NonZeroU8;
 
@@ -7,11 +7,6 @@ const DIFF: u8 = b'a' - b'A';
 #[inline]
 fn diff(a: u8, b: u8) -> u8 {
     u8::max(a, b) - u8::min(a, b)
-}
-
-#[aoc_generator(day5)]
-fn generator(input: &str) -> &[u8] {
-    input.as_bytes()
 }
 
 #[aoc(day5, part1)]
@@ -26,12 +21,12 @@ fn part2(input: &[u8]) -> Option<usize> {
         .min()
 }
 
-#[aoc(day5, part1, alt1, Stack)]
+#[aoc(day5, part1, Stack)]
 fn part1_stack(input: &[u8]) -> usize {
     stack(input)
 }
 
-#[aoc(day5, part2, alt1, Stack)]
+#[aoc(day5, part2, Stack)]
 fn part2_stack(input: &[u8]) -> Option<usize> {
     (b'A'..=b'Z')
         .map(|c| stack(input.iter().filter(|&&a| a != c && a != c + DIFF)))

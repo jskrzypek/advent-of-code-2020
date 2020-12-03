@@ -2,7 +2,7 @@ use aoc_runner_derive::{aoc, aoc_generator};
 
 type Data = usize;
 
-pub struct Node {
+struct Node {
     children: Vec<Node>,
     metadata: Vec<Data>,
 }

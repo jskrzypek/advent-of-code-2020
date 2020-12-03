@@ -1,12 +1,21 @@
 [package]
-name = "advent-of-code-2018"
+name = "advent-of-code-2020"
 version = "0.2.0"
-authors = ["Grégory Obanos <gregory.obanos@gmail.com>"]
+authors = ["Joshua Skrzypek <jskrzypek@gmail.com>"]
 edition = "2018"
 
+[lib]
+name = "advent_of_code_2020"
+path = "aoc-2020/lib.rs"
+
+[[example]]
+name = "aoc-2020"
+path = "aoc-2020/main.rs"
+
 [dependencies]
-aoc-runner = { path = "../../aoc-runner" }
-aoc-runner-derive = { path = "../../aoc-runner-derive" }
+aoc-runner = "0.3.0"
+aoc-runner-derive = "0.3.0"
+itertools = "0.9.0"
 fnv = "1.0.6"
 chrono = "0.4.6"
 petgraph = "0.4.13"

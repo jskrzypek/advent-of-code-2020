@@ -3,13 +3,13 @@ use fnv::FnvHashSet;
 use std::error::Error;
 
 #[derive(Debug, Eq, PartialEq)]
-pub struct Claim {
+struct Claim {
     id: u32,
     rect: Rectangle,
 }
 
 #[derive(Debug, Eq, PartialEq)]
-pub struct Rectangle {
+struct Rectangle {
     left: u32,
     top: u32,
     width: u32,

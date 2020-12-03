@@ -7,7 +7,7 @@ use std::str::FromStr;
 use std::string::FromUtf8Error;
 
 #[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
-pub struct Step(u8);
+struct Step(u8);
 
 impl Step {
     fn duration(self, base_time: u32) -> u32 {

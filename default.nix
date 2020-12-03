@@ -1,6 +1,17 @@
 { pkgs ? import <nixpkgs> { }, ... }:
 with pkgs;
 let
+  rustChannels = (import "${(pkgs.fetchFromGitHub {
+        owner = "mozilla";
+        repo = "nixpkgs-mozilla";
+        rev = "8c007b60731c07dd7a052cce508de3bb1ae849b4";
+        sha256 = "1zybp62zz0h077zm2zmqs2wcg3whg6jqaah9hcl1gv4x8af4zhs6";
+        fetchSubmodules = true;
+    }).out}/rust-overlay.nix" pkgs pkgs).latest.rustChannels;
+  inherit (rustChannels.stable) rust rustc cargo;
+  # inherit (rustChannels.beta) rust rustc cargo;
+  # inherit (rustChannels.nightly) rust rustc cargo;
+  # rustPlatform = makeRustPlatform rustNightly;
   cargo-aoc = rustPlatform.buildRustPackage rec {
     pname = "cargo-aoc";
     version = "0.3.2";
@@ -8,11 +19,11 @@ let
     src = fetchFromGitHub {
         owner = "jskrzypek";
         repo = pname;
-        rev = "c67bf02ca216d5a64a925d8a53ad33c9822ef823";
-        sha256 = "1g8281845hpdwnd5rpv4si0fhly6yyny6j87raip5qyb7lzh674x";
+        rev = "a897cc192a70426fb4aab1445a274ad2705d6d9a";
+        sha256 = "00v2mrnq94wb38l05d2xmmy0iw9vz4739b2rs007cf0rn3q7m9yz";
     };
 
-    cargoSha256 = "1app6124ckrzn6qhcy8wm88kcwmsqvnzq8idciq3pwqp4nc8pcjw";
+    cargoSha256 = "07sj05wdfj2sc878fqjbxfi09cjcdkwb2xp15smb600imc1z1x8f";
 
     nativeBuildInputs = [ pkg-config ];
     buildInputs = [ openssl ];
@@ -137,6 +148,7 @@ let
 
 in mkShell {
   name = "advent-of-code-2020";
-  buildInputs = [ cargo-aoc clojure clj2nix get-input common ];
-  passthru = { inherit cargo-aoc clj2nix get-input common; };
+  nativeBuildInputs = [pkg-config];
+  buildInputs = [ valgrind rust clojure clj2nix get-input common pkg-config openssl ];
+  passthru = { inherit rust clj2nix get-input common; };
 }

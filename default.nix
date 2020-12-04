@@ -2,16 +2,15 @@
 with pkgs;
 let
   rustChannels = (import "${(pkgs.fetchFromGitHub {
-        owner = "mozilla";
-        repo = "nixpkgs-mozilla";
-        rev = "8c007b60731c07dd7a052cce508de3bb1ae849b4";
-        sha256 = "1zybp62zz0h077zm2zmqs2wcg3whg6jqaah9hcl1gv4x8af4zhs6";
-        fetchSubmodules = true;
-    }).out}/rust-overlay.nix" pkgs pkgs).latest.rustChannels;
-  inherit (rustChannels.stable) rust rustc cargo;
-  # inherit (rustChannels.beta) rust rustc cargo;
-  # inherit (rustChannels.nightly) rust rustc cargo;
-  # rustPlatform = makeRustPlatform rustNightly;
+          owner = "mozilla";
+          repo = "nixpkgs-mozilla";
+          rev = "8c007b60731c07dd7a052cce508de3bb1ae849b4";
+          sha256 = "1zybp62zz0h077zm2zmqs2wcg3whg6jqaah9hcl1gv4x8af4zhs6";
+          fetchSubmodules = true;
+      }).out}/rust-overlay.nix" pkgs pkgs).latest.rustChannels;
+  inherit (rustChannels.stable) rust;
+  # inherit (rustChannels.beta) rust;
+  # inherit (rustChannels.nightly) rust;
   cargo-aoc = rustPlatform.buildRustPackage rec {
     pname = "cargo-aoc";
     version = "0.3.2";
@@ -31,13 +30,6 @@ let
     doCheck = false;
 
     cargoBuildFlags = [ "--verbose" ];
-
-    preBuild = ''
-      substituteInPlace Cargo.toml \
-        --replace ',
-    "examples/boilerplate"' ""
-    '';
-
   };
 
   clj2nix = callPackage (fetchFromGitHub {
@@ -149,6 +141,8 @@ let
 in mkShell {
   name = "advent-of-code-2020";
   nativeBuildInputs = [pkg-config];
-  buildInputs = [ valgrind rust clojure clj2nix get-input common pkg-config openssl ];
+  buildInputs = [ clojure clj2nix common pkg-config openssl ]
+    ++ lib.optionals stdenv.isLinux [ rust get-input valgrind ]
+    ++ lib.optionals stdenv.isDarwin [ rustPlatform.rust.rustc rustPlatform.rust.cargo  ];
   passthru = { inherit rust clj2nix get-input common; };
 }

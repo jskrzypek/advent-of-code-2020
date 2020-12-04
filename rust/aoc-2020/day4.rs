@@ -1,54 +1,43 @@
 use aoc_runner_derive::{aoc, aoc_generator};
-use chrono::NaiveDateTime;
-use chrono::ParseError;
-use chrono::Timelike;
-use std::cmp;
-use std::collections::HashMap;
-use std::error::Error as StdError;
-use std::fmt::{self, Display};
-use std::str::FromStr;
-use std::time::Duration;
+use itertools::Itertools;
+// use chrono::NaiveDateTime;
+// use chrono::ParseError;
+// use chrono::Timelike;
+use serde::Deserialize;
+// use std::cmp;
+// use std::collections::HashMap;
+// use std::error::Error as StdError;
+// use std::fmt::{self, Display};
+// use std::str::FromStr;
+// use std::time::Duration;
 
-#[derive(Debug, Eq, PartialEq)]
-struct Record {
-    date: NaiveDateTime,
-    action: Action,
-}
-
-impl Ord for Record {
-    fn cmp(&self, other: &Record) -> cmp::Ordering {
-        self.date.cmp(&other.date)
-    }
-}
-
-impl PartialOrd for Record {
-    fn partial_cmp(&self, other: &Record) -> Option<cmp::Ordering> {
-        Some(self.cmp(other))
-    }
-}
-
-#[derive(Debug, Eq, PartialEq)]
-enum Action {
-    BeginShift(u32),
-    FallAsleep,
-    WakeUp,
+#[derive(Debug, Deserialize)]
+struct Passport {
+    byr: String, //(Birth Year)
+    iyr: String, //(Issue Year)
+    eyr: String, //(Expiration Year)
+    hgt: String, //(Height)
+    hcl: String, //(Hair Color)
+    ecl: String, //(Eye Color)
+    pid: String, //(Passport ID)
+    cid: Option<String>, //(Country ID)
 }
 
 #[derive(Debug)]
 enum Error {
-    ParseDateError(ParseError),
-    ParseActionError(&'static str),
+    // ParseDateError(ParseError),
+    ParsePassportError(&'static str),
 }
 
-impl From<ParseError> for Error {
-    fn from(e: ParseError) -> Self {
-        Error::ParseDateError(e)
-    }
-}
+// impl From<ParseError> for Error {
+//     fn from(e: ParseError) -> Self {
+//         Error::ParseDateError(e)
+//     }
+// }
 
 impl From<&'static str> for Error {
     fn from(e: &'static str) -> Self {
-        Error::ParseActionError(e)
+        Error::ParsePassportError(e)
     }
 }
 
@@ -59,30 +48,34 @@ impl Display for Error {
 }
 impl StdError for Error {}
 
-impl FromStr for Action {
-    type Err = &'static str;
+// impl FromStr for Action {
+//     type Err = &'static str;
 
-    fn from_str(s: &str) -> Result<Action, &'static str> {
-        match s {
-            "falls asleep" => Ok(Action::FallAsleep),
-            "wakes up" => Ok(Action::WakeUp),
-            _ if s.starts_with("Guard #") && s.ends_with(" begins shift") => {
-                Ok(Action::BeginShift(
-                    s[7..s.len() - 13]
-                        .parse()
-                        .map_err(|_| "failed to parse guard id")?,
-                ))
-            }
-            _ => Err("failed to parse action"),
-        }
-    }
-}
+//     fn from_str(s: &str) -> Result<Action, &'static str> {
+//         match s {
+//             "falls asleep" => Ok(Action::FallAsleep),
+//             "wakes up" => Ok(Action::WakeUp),
+//             _ if s.starts_with("Guard #") && s.ends_with(" begins shift") => {
+//                 Ok(Action::BeginShift(
+//                     s[7..s.len() - 13]
+//                         .parse()
+//                         .map_err(|_| "failed to parse guard id")?,
+//                 ))
+//             }
+//             _ => Err("failed to parse action"),
+//         }
+//     }
+// }
 
 #[aoc_generator(day4)]
 fn parse(input: &str) -> Result<Vec<Record>, Error> {
     let mut records = input
-        .lines()
-        .map(|l| {
+        .split("\n\n")
+        .map(|p| {
+            let fields = p
+                .split(char::is_ascii_whitespace)
+                .map(|f| {
+                    if let Some((key, value)) = f.split(':').collect_tuple)
             let date = NaiveDateTime::parse_from_str(&l[1..17], "%Y-%m-%d %H:%M")?;
             let action = l[19..].parse()?;
 

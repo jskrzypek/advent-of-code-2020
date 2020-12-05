@@ -8,9 +8,9 @@ let
           sha256 = "1zybp62zz0h077zm2zmqs2wcg3whg6jqaah9hcl1gv4x8af4zhs6";
           fetchSubmodules = true;
       }).out}/rust-overlay.nix" pkgs pkgs).latest.rustChannels;
-  inherit (rustChannels.stable) rust;
+  # inherit (rustChannels.stable) rust;
   # inherit (rustChannels.beta) rust;
-  # inherit (rustChannels.nightly) rust;
+  inherit (rustChannels.nightly) rust;
   cargo-aoc = rustPlatform.buildRustPackage rec {
     pname = "cargo-aoc";
     version = "0.3.2";
@@ -142,7 +142,7 @@ in mkShell {
   name = "advent-of-code-2020";
   nativeBuildInputs = [pkg-config];
   buildInputs = [ clojure clj2nix common pkg-config openssl ]
-    ++ lib.optionals stdenv.isLinux [ rust get-input valgrind ]
+    ++ lib.optionals stdenv.isLinux [ rust valgrind ]
     ++ lib.optionals stdenv.isDarwin [ rustPlatform.rust.rustc rustPlatform.rust.cargo  ];
   passthru = { inherit rust clj2nix get-input common; };
 }

@@ -147,28 +147,6 @@ struct Passport {
     // cid: Option<&str>, //(Country ID)
 }
 
-fn validate_passport(pp: &Passport) -> Result<(), ValidationError> {
-    println!("{:?}", pp);
-    let Passport { hcl, ecl, pid, .. } = pp;
-    let mut err_str: &'static str = "";
-    if !RE_HAIR_COLOR.is_match(hcl) {
-        println!("HAIRCOLOR::{:?}", hcl);
-        err_str = "hcl problem";
-    }
-    if !RE_EYE_COLOR.is_match(ecl) {
-        println!("EYECOLOR::{:?}", ecl);
-        err_str = "ecl problem";
-    }
-    if !RE_PASSPORT_ID.is_match(pid) {
-        println!("PASSIDNU::{:?}", pid);
-        err_str = "pid problem";
-    }
-    if err_str == "" {
-        return Ok(())
-    }
-    Err(ValidationError::new(err_str))
-}
-
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 struct SimplePassport {
     byr: String, //(Birth Year)
@@ -196,7 +174,6 @@ fn part1(input: &str) -> usize {
 
 #[aoc(day4, part2)]
 fn part2(input: &str) -> usize {
-    let mut ct = 0;
     input
         .split("\n\n")
         .map(|s| s.replace(char::is_whitespace, "\n")

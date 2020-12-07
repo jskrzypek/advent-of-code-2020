@@ -8,9 +8,9 @@ let
           sha256 = "1zybp62zz0h077zm2zmqs2wcg3whg6jqaah9hcl1gv4x8af4zhs6";
           fetchSubmodules = true;
       }).out}/rust-overlay.nix" pkgs pkgs).latest.rustChannels;
-  # inherit (rustChannels.stable) rust;
+  inherit (rustChannels.stable) rust;
   # inherit (rustChannels.beta) rust;
-  inherit (rustChannels.nightly) rust;
+  # inherit (rustChannels.nightly) rust;
   cargo-aoc = rustPlatform.buildRustPackage rec {
     pname = "cargo-aoc";
     version = "0.3.2";
